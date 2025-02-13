@@ -1,13 +1,16 @@
 [package]
 name = "bot"
 version = "0.1.0"
-edition = "2025"
+edition = "2021"
 
 [dependencies]
+hi = { version = "0.1.0", path = "plugins/hi" }
 kovi = "0.11.7"
+kovi-plugin-cmd = "0.1.0"
 kovi-plugin-expand-napcat = "0.3.1"
 
 [workspace]
+members = ["plugins/hi"]
 
 
 [workspace.dependencies]

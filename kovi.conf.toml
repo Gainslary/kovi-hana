@@ -1,0 +1,10 @@
+[config]
+main_admin = 1591495044
+admins = []
+debug = false
+
+[server]
+host = "106.14.121.148"
+port = 3001
+access_token = "Woshiwhy684!"
+secure = false
