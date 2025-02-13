@@ -1,7 +1,8 @@
 [package]
-name = "hi"
+name = "hana"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 kovi.workspace = true
+kovi-plugin-expand-napcat = "0.3.1"

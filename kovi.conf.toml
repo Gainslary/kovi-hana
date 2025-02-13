@@ -1,6 +1,6 @@
 [config]
 main_admin = 1591495044
-admins = []
+admins = [309646879]
 debug = false
 
 [server]
