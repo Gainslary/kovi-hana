@@ -1,17 +1,17 @@
-[hana]
-enable_on_startup = true
-access_control = false
-list_mode = "WhiteList"
-
-[hana.access_list]
-friends = []
-groups = []
-
 [kovi-plugin-cmd]
 enable_on_startup = true
 access_control = false
 list_mode = "WhiteList"
 
 [kovi-plugin-cmd.access_list]
+friends = []
+groups = []
+
+[hana]
+enable_on_startup = true
+access_control = false
+list_mode = "WhiteList"
+
+[hana.access_list]
 friends = []
 groups = []

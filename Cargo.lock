@@ -720,6 +720,7 @@ dependencies = [
 name = "hana"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "indoc",
  "kovi",
  "kovi-plugin-expand-napcat",

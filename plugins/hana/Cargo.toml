@@ -16,3 +16,4 @@ indoc = "2"
 regex = "1"
 sqlx = { version = "0", features = ["runtime-tokio", "sqlite"] }
 time = { version = "0", features = ["macros", "formatting"] }
+chrono = "0.4"

@@ -12,6 +12,7 @@ use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
 use serde::Deserialize;
 use serde_json::json;
 use std::sync::Arc;
+use chrono::Utc;
 
 pub async fn logger(e: Arc<MsgEvent>) {
     let Some(group_id) = e.group_id else {
@@ -92,8 +93,19 @@ pub async fn at_me_handler(e: Arc<MsgEvent>) {
         .group_query(group_id, Some(time), sender_id, &content)
         .await
     {
-        let message = Message::from(answer);
+        let message = Message::from(&answer);
         e.reply_and_quote(message);
+
+        // 获取现在时间
+        let time = TimeRepr::UnixTimeStamp(Utc::now().timestamp());
+        let message = Message::from(answer);
+        store::write_group_msg(
+            group_id,
+            e.message_id,
+            Some(time),
+            *bot_qq,
+            message,
+        ).await;
     }
 }
 
@@ -172,8 +184,10 @@ impl AgentSetting {
         let (dev_prompt, user_prompt) = self.substitute_dev_user(&history, &message, know);
         std_info!(
             "
-            Developer prompt: {dev_prompt}
-            User Prompt:{user_prompt}
+            Developer prompt:
+            {dev_prompt}
+            User Prompt:
+            {user_prompt}
             "
         );
 
@@ -207,36 +221,6 @@ impl AgentSetting {
                         {
                             "role": "user",
                             "content": format!("{dev_prompt}\n{user_prompt}")
-                        }
-                    ]
-                })
-            }
-            "deepseek-chat" | "deepseek-reasoner" => {
-                json!({
-                    "model": model,
-                    "messages": [
-                        {
-                            "role": "system",
-                            "content": dev_prompt
-                        },
-                        {
-                            "role": "user",
-                            "content": user_prompt
-                        }
-                    ]
-                })
-            }
-            "deepseek-ai/DeepSeek-V3" | "deepseek-ai/DeepSeek-R1" => {
-                json!({
-                    "model": model,
-                    "messages": [
-                        {
-                            "role": "system",
-                            "content": dev_prompt
-                        },
-                        {
-                            "role": "user",
-                            "content": user_prompt
                         }
                     ]
                 })

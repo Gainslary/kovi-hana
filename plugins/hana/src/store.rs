@@ -180,7 +180,23 @@ pub async fn db_load_n_group_segment(group_id: i64, n: i64) -> PluginResult<Vec<
 
     let query = load_n_latest_msg(&table_name);
     let segs: Vec<GroupChatSegment> = sqlx::query_as(&query).bind(n).fetch_all(pool).await?;
-    Ok(segs)
+
+    // 计算消息的总字数
+    let mut total_tokens = 0;
+    let mut valid_segs = Vec::new();
+
+    for seg in segs.into_iter().rev() {
+        // 假设每个字符占用1个token，实际情况可能需要根据具体token计算规则调整
+        total_tokens += seg.content.len();
+        if total_tokens <= 500 {
+            valid_segs.push(seg);
+        } else {
+            break;
+        }
+    }
+
+    valid_segs.reverse();
+    Ok(valid_segs)
 }
 
 async fn dump_csv(filename: &str, query: &str) -> PluginResult<String> {
@@ -328,7 +344,7 @@ mod sql_query {
                 SELECT DISTINCT time
                 FROM {table_name}
                 ORDER BY time DESC
-                LIMIT $1
+                LIMIT $1 OFFSET 1
             )
             ORDER BY time ASC;
             "
