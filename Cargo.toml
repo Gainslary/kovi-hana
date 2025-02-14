@@ -2,6 +2,7 @@
 name = "bot"
 version = "0.1.0"
 edition = "2021"
+description = "A QQ chatbot powered by Kovi with OpenAI integration. --Hana"
 
 [dependencies]
 hana = { version = "0.1.0", path = "plugins/hana" }
@@ -11,7 +12,6 @@ kovi-plugin-expand-napcat = "0.3.1"
 
 [workspace]
 members = [ "plugins/hana"]
-
 
 [workspace.dependencies]
 kovi = "0.11.7"

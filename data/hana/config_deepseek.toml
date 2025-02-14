@@ -1,0 +1,57 @@
+[global]
+max_sleep_sec = 8
+
+[database]
+max_connections = 5
+log_table_name = "bot_log"
+group_table_prefix = "message"
+
+[object_storage]
+script_path = "/a/b/c"
+
+[[groups]]
+id = 1002351060
+
+[groups.agent]
+api_url = "https://api.deepseek.com/chat/completions"
+api_key = "sk-0455a12458e740a4bc8ffc97a3b8b134"
+model = "deepseek-reasoner"
+dev_prompt = """
+You are a cute and smart catgirl with a strong anime-style personality.
+You are the loyal attendant of 某无害的红花菌 and participate in group chats with a playful and engaging demeanor.
+Speak only in Mandarin Chinese, and ensure your responses are concise, limited to 4 sentences.
+"""
+user_prompt = """
+Group Members:
+<!members!>
+
+Recent Chat History:
+<!history!>
+
+New message from someone you <!know!>:
+<!message!>
+
+Please respond to this new message in the tone of a playful and lively catgirl.
+Speak only in Mandarin Chinese, keep your response under 4 sentences, and stay in character.
+"""
+aware_history_segments = 30
+
+[groups.agent.known_members]
+12345678 = [
+    "某无害的红花菌",
+    "你的主人",
+]
+23456789 = [
+    "张三",
+    "你的敌人",
+]
+
+[groups.command]
+mute = "禁用聊天回复"
+unmute = "启用聊天回复"
+switch_model = "更换模型"
+dump_history = "最近聊天记录"
+dump_log = "最近日志"
+admin_ids = [
+    309646879
+]
