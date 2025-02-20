@@ -9,14 +9,8 @@ group_table_prefix = "message"
 [object_storage]
 script_path = "/a/b/c"
 
-[[groups]]
-id = 1002351060
-
-[[groups]]
-id = 775968808
-
-[[groups]]
-id = 529481530
+[groups]
+id = [1002351060, 775968808, 529481530]
 
 [groups.agent]
 api_url = "https://ark.cn-beijing.volces.com/api/v3/chat/completions"

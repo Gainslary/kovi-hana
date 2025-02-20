@@ -83,25 +83,33 @@ pub async fn init_global_state() -> PluginResult<()> {
     set_with_err(&BOT, bot)?;
 
     // init groups
-    if let Some(groups) = config.groups.as_mut() {
+    if let Some(ref mut groups) = config.groups {
         // init agent
-        let agents = groups.iter_mut().filter_map(|g| g.agent.as_mut());
-        for agent in agents {
-            agent.load_members();
-            agent.set_model(agent.model.clone()).await;
-        }
+        let Some(ref mut agent) = groups.agent else {
+            std_error!(
+                " None Agent set"
+            );
+            return Ok(())
+        };
+        agent.load_members();
+        agent.set_model(agent.model.clone()).await;
 
         // init command regex
-        let commands = groups.iter_mut().filter_map(|g| g.command.as_mut());
-        for command in commands {
-            if let Err(err) = command.init_regex() {
-                std_error!(
-                    "
-                    Initialize command regex failed.
-                    {err}
-                    ");
-            }
+        let Some(ref mut command) = groups.command else {
+            std_error!(
+                " None Command set"
+            );
+            return Ok(())
+        };
+        if let Err(err) = command.init_regex() {
+            std_error!(
+                "
+                   Initialize command regex failed.
+                   {err}
+                "
+            );
         }
+
     }
     std_info!("{:?}", config);
     let max_conn = config.database.max_connections;
@@ -160,7 +168,7 @@ pub struct Config {
     pub global: GlobalSetting,
     pub database: DatabaseSetting,
     pub object_storage: Option<ObjectStorageSetting>,
-    pub groups: Option<Vec<GroupSetting>>,
+    pub groups: Option<GroupSetting>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -175,7 +183,7 @@ pub struct ObjectStorageSetting {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct GroupSetting {
-    pub id: i64,
+    pub id: Option<Vec<i64>>,
     pub live: Option<LiveSetting>,
     pub agent: Option<AgentSetting>,
     pub command: Option<CommandSetting>,
@@ -406,7 +414,7 @@ impl Default for Config {
             global: GlobalSetting::default(),
             database: DatabaseSetting::default(),
             object_storage: Some(ObjectStorageSetting::default()),
-            groups: Some(vec![GroupSetting::default(), GroupSetting::default()]),
+            groups: Some(GroupSetting::default()),
         }
     }
 }
@@ -438,7 +446,7 @@ impl Default for DatabaseSetting {
 impl Default for GroupSetting {
     fn default() -> Self {
         Self {
-            id: 12345678,
+            id: Some(vec![12345678]),
             live: Some(LiveSetting::default()),
             agent: Some(AgentSetting::default()),
             command: Some(CommandSetting::default()),

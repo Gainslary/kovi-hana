@@ -151,11 +151,13 @@ pub async fn get_name_in_group(group_id: i64, user_id: i64) -> String {
     // if let else syntax cannot fall through normal control
     let config = CONFIG.get().unwrap();
     if let Some(ref groups) = config.groups {
-        if let Some(group) = groups.iter().find(|&g| g.id == group_id) {
-            if let Some(ref agent) = group.agent {
-                // is a known member -> return configured name
-                if let Some((name, _)) = agent.known_members.get(&user_id.to_string()) {
-                    return name.to_string();
+        if let Some(ref group_ids) = groups.id {
+            if group_ids.contains(&group_id) {
+                if let Some(ref agent) = groups.agent {
+                    // is a known member -> return configured name
+                    if let Some((name, _)) = agent.known_members.get(&user_id.to_string()) {
+                        return name.to_string();
+                    }
                 }
             }
         }

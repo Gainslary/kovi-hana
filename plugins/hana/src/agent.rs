@@ -72,13 +72,18 @@ pub async fn at_me_handler(e: Arc<MsgEvent>) {
     let Some(ref groups) = config.groups else {
         return;
     };
-    let Some(group) = groups.iter().find(|&g| g.id == group_id) else {
+
+    // group_id 在 groups.ids中
+    let Some(ref group_ids) = groups.id else {
+        return;
+    };
+    if !group_ids.contains(&group_id) {
         bot.send_group_msg(group_id, "该群聊未配置");
         return;
     };
 
     // no-op if no agent config
-    let Some(ref agent) = group.agent else {
+    let Some(ref agent) = groups.agent else {
         return;
     };
     // no-op if mute
@@ -124,10 +129,13 @@ pub async fn query_with_id_msg(
     let Some(ref groups) = config.groups else {
         return invoke_no_agent;
     };
-    let Some(group) = groups.iter().find(|&g| g.id == group_id) else {
+    let Some(ref group_ids) = groups.id else {
         return invoke_no_agent;
     };
-    let Some(ref agent) = group.agent else {
+    if !group_ids.contains(&group_id) {
+        return invoke_no_agent;
+    }
+    let Some(ref agent) = groups.agent else {
         return invoke_no_agent;
     };
 

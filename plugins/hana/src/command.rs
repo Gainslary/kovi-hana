@@ -22,10 +22,13 @@ pub async fn act(e: Arc<MsgEvent>) {
     let Some(ref groups) = config.groups else {
         return;
     };
-    let Some(group) = groups.iter().find(|&g| g.id == group_id) else {
+    let Some(ref group_ids) = groups.id else {
         return;
     };
-    let Some(ref command) = group.command else {
+    if !group_ids.contains(&group_id) {
+        return;
+    };
+    let Some(ref command) = groups.command else {
         return;
     };
     if !command.admin_ids.contains(&e.sender.user_id) {
@@ -37,7 +40,7 @@ pub async fn act(e: Arc<MsgEvent>) {
 
     match cmd {
         crate::GroupCommand::Mute => {
-            let Some(ref agent) = group.agent else {
+            let Some(ref agent) = groups.agent else {
                 util::send_group_and_log(group_id, "未配置agent").await;
                 return;
             };
@@ -49,7 +52,7 @@ pub async fn act(e: Arc<MsgEvent>) {
             util::send_group_and_log(group_id, "接下来我将冷暴力你们所有人,直到主人哀求我").await;
         }
         crate::GroupCommand::Unmute => {
-            let Some(ref agent) = group.agent else {
+            let Some(ref agent) = groups.agent else {
                 util::send_group_and_log(group_id, "未配置agent").await;
                 return;
             };
@@ -61,7 +64,7 @@ pub async fn act(e: Arc<MsgEvent>) {
             util::send_group_and_log(group_id, "我勉为其难地同意和你们聊天").await;
         }
         crate::GroupCommand::SwitchModel(model) => {
-            let Some(ref agent) = group.agent else {
+            let Some(ref agent) = groups.agent else {
                 util::send_group_and_log(group_id, "未配置agent").await;
                 return;
             };
